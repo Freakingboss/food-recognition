@@ -1,0 +1,28 @@
+{
+  "name": "fra_web_app",
+  "version": "0.0.1",
+  "description": "Food Recognition Web Application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "tensorflow",
+    "machine",
+    "learning",
+    "web",
+    "application",
+    "food",
+    "recognition"
+  ],
+  "author": "Arthur Brant",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}

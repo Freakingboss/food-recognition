@@ -1,0 +1,30 @@
+<div class="meal">
+    <h3 id="refeicao">Refeicao <span id="nomeRefeicao">X</span><br>
+        <span id="dataHora">03/12/2019 13:00</span>
+    </h3>
+    
+    <input id="input-img" type="file" accept="image/*" capture="environment">
+    
+    <div class="img-container" align="center">
+        <img id="foodImage" src="" alt="">
+    </div>
+    
+    <div>
+        <table id="tabelaAlimento"></table>
+    </div>
+    
+    <div>
+        <p id="resultado">Valor calórico total: 
+            <span id="valorSoma">200</span> kCal</p>
+    </div>
+    
+</div>
+
+<button id="cancel-meal-button">Cancelar</button>
+<button id="save-meal-button">Salvar</button>
+
+<!-- Load Tensorflow and Teachable Machine models -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+<script src="/javascript/meal.js"></script>
+<script src="/javascript/newMeal.js"></script>
