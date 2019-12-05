@@ -18,9 +18,9 @@ class Meal {
         };
     }
 
-    // createMeal() {
-    //     this.myMeal.meal.dateTime = new Date();
-    // }
+    createMeal() {
+        this.myMeal.meal.dateTime = new Date();
+    }
 
     // editMealName(mealName) {
     //     this.myMeal.meal.mealName = mealName;
@@ -34,7 +34,7 @@ class Meal {
         let predictedFood = this.getFoodWithHighestProbability(food);
 
         // Get food info in the food table
-        // let foodInfo = await getFoodInfo('/get-food-info', predictedFood.className,);
+        // let foodInfo = await getFoodComposition('/get-food-info', predictedFood.className,);
 
         // Add food to the meal
         this.myMeal.food.push({
@@ -46,25 +46,22 @@ class Meal {
         return;
     }
 
-    async getFoodInfo(url, data) {
+    async getFoodComposition(url) {
+        let foodInfo = null;
         let postOptions = {
-            method: 'POST',
-            mode: 'CORS',
+            method: 'GET',
             cache: 'no-cache',
-            credentials: 'omit',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            referrer: 'no-referrer',
-            body: JSON.stringify(data)
+            credentials: 'omit'
         }
+
         try {
-        let foodInfo = await fetch(url, postOptions);
-        console.log('Sucesso: ', JSON.stringify(foodInfo));
+            let response = await fetch(url, postOptions);
+            foodInfo = await response.json();
+            console.log(foodInfo);
         } catch (error) {
-            console.log('Error:',  error);
+            throw new Error ('Mensagem de erro: ', error);
         }
-        return await foodInfo.json();
+        return foodInfo;
     }
 
     getFoodWithHighestProbability(predictions) {
@@ -82,6 +79,3 @@ class Meal {
     }
 
 }
-
-let myNewMeal = new Meal();
-myNewMeal.mealSucessMessage();

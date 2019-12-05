@@ -2,6 +2,9 @@ const express = require('express');
 const meal_controller = require('../controllers/mealController');
 const router = express.Router();
 
+// Get a single food composition
+router.get('/get-food-composition?', meal_controller.getFoodComposition);
+
 // GET a list of the most recent meals
 router.get('/:userId/meals-list', meal_controller.getMealsList);
 

@@ -1,6 +1,6 @@
 const modelURL = '/ml_models/tm-my-image-model/';
 let model, maxPredictions;
-
+let valorCalorias = 0;
 const listaItensInseridos = [];
 
 async function init() {
@@ -12,8 +12,10 @@ async function init() {
     maxPredictions = model.getTotalClasses();
     
     criarTitulosTabelaAlimentos();
+    let date = 0;
+    date = constroiData();
+    document.getElementById("dataHora").innerHTML = date;
 }
-init();
 
 async function uploadImage() {
     let uploadedFile = document.getElementById("input-img").files[0];
@@ -27,6 +29,7 @@ async function predict() {
 }
 
 function criarTitulosTabelaAlimentos(){
+    
     let tabela = document.getElementById('tabelaAlimento');
     let line = document.createElement('tr');
     
@@ -50,16 +53,11 @@ function criarTitulosTabelaAlimentos(){
     let fiberText = document.createTextNode('Fibras');
     fiber.appendChild(fiberText);
     
-    let quantity = document.createElement('th');
-    let quantityText = document.createTextNode('Quantidade');
-    quantity.appendChild(quantityText);
-    
     line.appendChild(food);
     line.appendChild(kcal);
     line.appendChild(protein);
     line.appendChild(carbohydrate);
     line.appendChild(fiber);
-    line.appendChild(quantity);
     
     tabela.appendChild(line);
     
@@ -69,44 +67,68 @@ function insertFoodItem(pf) {
     // Se há alimento identificado pelo modelo,
     // inserir o nome numa lista
     
-    if(Object.keys(pf).length > 0){
+    if (Object.keys(pf).length > 0) {
         
         let tabela = document.getElementById('tabelaAlimento');
-        let line = document.createElement('tr');
-
-        let food = document.createElement('td');
-        let kcal = document.createElement('td');
-        let protein = document.createElement('td');
-        let carbohydrate = document.createElement('td');
-        let fiber = document.createElement('td');
-        let quantity = document.createElement('td');
         
-        let addButton = document.createElement('button');
-        addButton.innerHTML = "+";
+        pf.forEach(function(valor){
+            
+            let line = document.createElement('tr');
 
-        let removeButton = document.createElement('button');
-        removeButton.innerHTML = "-";
+            let food = document.createElement('td');
+            let kcal = document.createElement('td');
+            let protein = document.createElement('td');
+            let carbohydrate = document.createElement('td');
+            let fiber = document.createElement('td');
+            
+            kcal.setAttribute("name", "calorias");
+            line.setAttribute("name", valor.food_name);
+            
+            food.innerHTML=valor.food_name;
+            kcal.innerHTML=valor.kcal;
+            protein.innerHTML=valor.protein;
+            carbohydrate.innerHTML=valor.carbohydrate;
+            fiber.innerHTML=valor.fiber;
 
-        quantity.appendChild(addButton);
-        quantity.appendChild(removeButton);
-        
-        let predictionTextNode = document.createTextNode(pf.className);
-        console.log(predictionTextNode);
-        food.append(predictionTextNode);
-        
-        line.appendChild(food);
-        line.appendChild(kcal);
-        line.appendChild(protein);
-        line.appendChild(carbohydrate);
-        line.appendChild(fiber);
-        line.appendChild(quantity);
-
-        tabela.appendChild(line);
-        
+            line.appendChild(food);
+            line.appendChild(kcal);
+            line.appendChild(protein);
+            line.appendChild(carbohydrate);
+            line.appendChild(fiber);
+            
+            tabela.appendChild(line);
+            valorCalorias += valor.kcal;
+        });
     }
     
 }
 
+function constroiData(){
+    
+    var meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    
+    let date = new Date();
+    
+    var dia = date.getDay() + 1;
+    var mesNumerico = date.getMonth();
+    var ano = date.getFullYear();
+    
+    var hora = date.getHours();
+    var minuto = date.getMinutes();
+    
+    if(dia < 10){
+        dia = '0' + dia;
+    }
+    
+    var mesLetras = meses.filter( (valor, index) => (index === mesNumerico));
+    
+    
+    var dataFormatada = dia + ' de ' + mesLetras + ' de ' + ano + ' - ' + hora + ':' + minuto;
+    
+    return dataFormatada;
+}
+
+init();
 // Event listener que escuta as mudanças de imagens.
 // Quando uma nova imagem carregar, prever o alimento
 // que está nela.
@@ -115,10 +137,17 @@ imgTag.addEventListener('load', async e =>{
     let predictedFood = {};
     const response = await predict();
     predictedFood = myNewMeal.getFoodWithHighestProbability(response);
-    insertFoodItem(predictedFood);
+    
+    let foodComp = await myNewMeal.getFoodComposition(`/meal/get-food-composition?className=${predictedFood.className}`);
+
+    insertFoodItem(foodComp);
+    document.getElementById("valorSoma").innerHTML = valorCalorias;
 }, false);
 
 const fileInput = document.getElementById("input-img");
 fileInput.addEventListener('change', e => {
     uploadImage();
 }, false);
+
+let myNewMeal = new Meal();
+myNewMeal.mealSucessMessage();

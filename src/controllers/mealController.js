@@ -21,8 +21,16 @@ function getMealsList(req, res) {
     res.send(meals);
 }
 
+async function getFoodComposition(req, res) {
+    let foodComposition = await mealModel.queryFoodComposition(req.query);
+    console.log(req.query);
+    // res.send(req.query);
+    res.json(foodComposition);
+}
+
 module.exports = {
     getNewMealPage,
     getMealsPage,
-    getMealsList
+    getMealsList,
+    getFoodComposition
 };
